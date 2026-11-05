@@ -1,0 +1,7 @@
+# Development: training, experiment tracking, tests and linting.
+-r requirements.txt
+mlflow==3.18.0
+matplotlib==3.11.2
+pytest==9.2.0
+httpx==0.28.1
+ruff==0.17.3

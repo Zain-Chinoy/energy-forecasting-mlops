@@ -1,0 +1,50 @@
+{
+  "model_type": "hist_gradient_boosting",
+  "feature_set": "calendar_temp",
+  "features": [
+    "hour",
+    "dayofweek",
+    "month",
+    "is_weekend",
+    "holiday",
+    "school",
+    "T2M_toc",
+    "T2M_san",
+    "T2M_dav"
+  ],
+  "params": {
+    "learning_rate": 0.03,
+    "max_iter": 400,
+    "max_depth": null,
+    "min_samples_leaf": 20,
+    "l2_regularization": 1.0
+  },
+  "cv": {
+    "cv_rmse_mean": 77.32082959402945,
+    "cv_rmse_std": 13.535286224524494,
+    "cv_mae_mean": 66.00284259846723,
+    "cv_r2_mean": 0.8230248460674993
+  },
+  "test": {
+    "test_rmse": 92.82994577039588,
+    "test_mae": 77.73572676759441,
+    "test_r2": 0.754723953297786,
+    "test_mape_pct": 6.2213995374974385,
+    "baseline_test_rmse": 197.6412378313983,
+    "rmse_improvement_vs_baseline_pct": 53.03108461120535
+  },
+  "shift_2020": {
+    "shift2020_rmse": 157.79626664247522,
+    "shift2020_mae": 125.27500575652363,
+    "shift2020_r2": 0.19708096264862696,
+    "shift2020_mape_pct": 10.731221187911968
+  },
+  "dataset": "panama_electricity_load",
+  "train_rows": 39359,
+  "test_rows": 4416,
+  "mlflow_run_id": "7ce77629edaf49859452b7c2ee2b63c2",
+  "mlflow_experiment": "energy-demand-forecasting",
+  "trained_at_utc": "2026-11-05T07:38:26+00:00",
+  "sklearn_version": "1.9.1",
+  "python_version": "3.12.3"
+}
