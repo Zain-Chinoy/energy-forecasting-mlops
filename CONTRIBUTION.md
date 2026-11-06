@@ -4,9 +4,9 @@
 
 | Member | ERP | Workstream |
 |---|---|---|
-| Muhammad Zain Chinoy | 29059 | Data pipeline |
+| Muhammad Zain Chinoy | 29059 | Data pipeline and repository setup |
 | Areeba Salman | 29075 | Experiments and MLflow |
-| Abdullah Feroz | 29219 | API, testing and repository setup |
+| Abdullah Feroz | 29219 | API and testing |
 
 Milestone 1 was split into three workstreams of roughly equal size. Each member owns the code, tests and documentation for one workstream, and every pull request is reviewed by a different member.
 
@@ -14,19 +14,21 @@ Milestone 1 was split into three workstreams of roughly equal size. Each member 
 
 | Workstream | Owner | Main files | Tests | Branch | Reviewer |
 |---|---|---|---|---|---|
-| Data pipeline | Muhammad Zain Chinoy | `src/prepare_data.py`, `src/features.py`, `src/config.py` (paths, split dates, valid ranges), `data/raw/README.md` | `tests/test_prepare_data.py` (9), `tests/test_features.py` (3) | `feat/data-prep` | Areeba Salman |
+| Data pipeline and repository setup | Muhammad Zain Chinoy | `src/prepare_data.py`, `src/features.py`, `src/config.py` (paths, split dates, valid ranges), `data/raw/README.md`, `requirements*.txt`, `.gitignore`, `LICENSE`, GitHub repository | `tests/test_prepare_data.py` (9), `tests/test_features.py` (3) | `feat/data-prep` | Areeba Salman |
 | Experiments and MLflow | Areeba Salman | `src/train.py`, `src/config.py` (feature sets), `models/`, `reports/` | `tests/test_train.py` (7) | `feat/mlflow-training` | Abdullah Feroz |
-| API, testing and repository setup | Abdullah Feroz | `src/model.py`, `src/app.py`, `requirements*.txt`, `pyproject.toml`, `.gitignore`, `LICENSE` | `tests/test_api.py` (17), `tests/test_model.py` (6), `tests/conftest.py` | `feat/api` | Muhammad Zain Chinoy |
+| API and testing | Abdullah Feroz | `src/model.py`, `src/app.py`, `pyproject.toml` (ruff and pytest settings) | `tests/test_api.py` (17), `tests/test_model.py` (6), `tests/conftest.py` | `feat/api` | Muhammad Zain Chinoy |
 | Contribution file and final docs | All three | `CONTRIBUTION.md`, final `README.md` edits | n/a | `feat/docs` | Abdullah Feroz and Areeba Salman |
 
 ## Detailed tasks
 
-### Muhammad Zain Chinoy: data pipeline
+### Muhammad Zain Chinoy: data pipeline and repository setup
 - Explored the Panama electricity dataset and documented its quirks: humidity labelled "%" but stored as specific humidity, the Jan 2019 outage, the COVID-era demand drop from March 2020, and the redundant `Holiday_ID` column.
 - Wrote `prepare_data.py`: column checks, duplicate and timestamp handling, range validation, interpolation of gaps of at most 3 hours, a validation report, and the chronological train / test / 2020-shift split (no data leakage).
 - Wrote `features.py` so training and the API derive hour, day of week, month and weekend flag with the same code.
 - Defined the paths, split dates and valid physical ranges in `config.py`.
 - Wrote the data-preparation and feature tests, and the Dataset and data-preparation sections of the README.
+- Set up the GitHub repository: created it, added the team as collaborators, protected `main` so changes go through reviewed pull requests, and pushed the initial project scaffold.
+- Added the pinned `requirements.txt` and `requirements-dev.txt`, the `.gitignore` and the `LICENSE`, and tags the milestone release.
 
 ### Areeba Salman: experiments and MLflow
 - Designed the experiment plan: baseline, three model types (Linear Regression, Random Forest, Gradient Boosting) and eight feature-set combinations.
@@ -35,11 +37,11 @@ Milestone 1 was split into three workstreams of roughly equal size. Each member 
 - Selected and saved the final model (`models/model.joblib`, `model_meta.json`) and generated `reports/` (results tables and figures).
 - Wrote the training tests, and the MLflow design, results and findings sections of the README.
 
-### Abdullah Feroz: API, testing and repository setup
+### Abdullah Feroz: API and testing
 - Built the FastAPI service: `/predict` with strict Pydantic validation (types, ranges, no unknown fields), `/health`, `/model-info` and the auto-generated `/docs`.
 - Wrote `model.py` (model loading and single-row prediction) and handled the case where the model file is missing (HTTP 503).
 - Wrote the API and model tests: valid and invalid requests, deterministic output, and a check that the model beats the baseline.
-- Set up the repository: pinned `requirements.txt` and `requirements-dev.txt`, `pyproject.toml` (ruff and pytest settings), `.gitignore` and `LICENSE`; kept `ruff` and `pytest` passing.
+- Configured linting and testing in `pyproject.toml` (ruff and pytest settings) and kept `ruff` and `pytest` passing.
 - Wrote the architecture diagram, Quick start and API usage sections of the README.
 
 ### Shared work
@@ -54,12 +56,13 @@ Milestone 1 was split into three workstreams of roughly equal size. Each member 
 - Pull request for `feat/api` (Abdullah) is reviewed by Zain.
 - Direct pushes to `main` are not allowed. Branches follow the `feat/` and `fix/` naming convention.
 
+
 ## Individual reflections
 
 What each member built, what stood out, and what they learned.
 
 ### Muhammad Zain Chinoy
-Working on the data pipeline showed me how much of an ML project happens before any model is trained. I found that the humidity column is documented as a percentage but actually holds specific humidity, and that demand drops sharply from March 2020, so I kept 2020 out of training and testing. The biggest lesson was splitting the data by date instead of randomly, so that the test results are honest and nothing leaks from the future into training.
+Working on the data pipeline showed me how much of an ML project happens before any model is trained. I found that the humidity column is documented as a percentage but actually holds specific humidity, and that demand drops sharply from March 2020, so I kept 2020 out of training and testing. The biggest lesson was splitting the data by date instead of randomly, so that the test results are honest and nothing leaks from the future into training. I also set up the GitHub repository and protected `main`, so the whole team works through reviewed pull requests.
 
 ### Areeba Salman
 I designed and ran the MLflow experiments, comparing three model types across eight feature sets and logging every run so the final choice is backed by evidence. The most surprising result was that adding humidity, rainfall and wind did not improve the model, and calendar features such as hour and day of week did most of the work. I learned that choosing the best model with cross-validation, and touching the test set only once, matters more than trying many options.
