@@ -52,6 +52,7 @@ from sklearn.pipeline import Pipeline  # noqa: E402
 from sklearn.preprocessing import OneHotEncoder, StandardScaler  # noqa: E402
 
 from src import config  # noqa: E402
+from src.explain import build_background, save_background  # noqa: E402
 
 logger = logging.getLogger("train")
 
@@ -544,6 +545,10 @@ def run_training(
             "python_version": platform.python_version(),
         }
         (models_dir / "model_meta.json").write_text(json.dumps(meta, indent=2))
+        save_background(
+            build_background(train, best_features, config.BACKGROUND_ROWS, config.RANDOM_STATE),
+            models_dir / "background.json",
+        )
         mlflow.log_artifact(str(models_dir / "model_meta.json"), artifact_path="reports")
 
     # Human-readable summary used in the README.

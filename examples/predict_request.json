@@ -1,0 +1,17 @@
+{
+  "timestamp": "2019-10-15T14:00:00",
+  "T2M_toc": 30.1,
+  "T2M_san": 29.4,
+  "T2M_dav": 27.8,
+  "QV2M_toc": 0.0189,
+  "QV2M_san": 0.0185,
+  "QV2M_dav": 0.0178,
+  "TQL_toc": 0.05,
+  "TQL_san": 0.08,
+  "TQL_dav": 0.1,
+  "W2M_toc": 12.0,
+  "W2M_san": 6.5,
+  "W2M_dav": 3.2,
+  "holiday": 0,
+  "school": 1
+}

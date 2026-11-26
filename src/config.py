@@ -11,6 +11,8 @@ FIGURES_DIR = REPORTS_DIR / "figures"
 
 MODEL_PATH = MODELS_DIR / "model.joblib"
 MODEL_META_PATH = MODELS_DIR / "model_meta.json"
+BACKGROUND_PATH = MODELS_DIR / "background.json"  # sample of training rows for /explain
+BACKGROUND_ROWS = 50
 
 DATASET_NAME = "panama_electricity_load"
 DATETIME_COL = "datetime"
@@ -18,7 +20,7 @@ TARGET = "nat_demand"
 RANDOM_STATE = 42
 
 # Chronological split. Train < TEST_START <= test < SHIFT_START <= shift set.
-# From March 2020 demand dropped ~15% (COVID-19 lockdown), so 2020 is kept out of
+# From March 2020 demand dropped ~12% (COVID-19 lockdown), so 2020 is kept out of
 # train/test and used only as a distribution-shift check.
 TEST_START = "2019-07-01"
 SHIFT_START = "2020-01-01"
