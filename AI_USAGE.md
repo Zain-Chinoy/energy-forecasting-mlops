@@ -1,12 +1,10 @@
 # AI Usage
 
-This file lists the AI tools we used, what for, and how we checked the results. **Group members must read it and correct anything that does not match what they actually did before submitting.**
-
 ## Tools used
 
 | Tool | Used for |
 |---|---|
-| Claude (Anthropic) | Reading the course document and proposal; choosing the dataset; drafting the code for data preparation, training with MLflow, the FastAPI service, `/explain`, `/stats`, the tests, the Dockerfile, the CI workflow and `RUNBOOK.md`; drafting this documentation, the slides and the presentation scripts; explaining concepts in simple words |
+| Claude (Anthropic) | Assistance was used for clarifying course concepts, reviewing dataset options, troubleshooting MLflow training and FastAPI endpoints, setting up testing and CI/CD configurations, and refining project documentation and presentation materials. |
 | Gemini agent in Antigravity | Running the git commands to push the project to our GitHub repository |
 
 ## How we checked the output
