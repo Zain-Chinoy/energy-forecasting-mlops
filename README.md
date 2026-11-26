@@ -132,12 +132,12 @@ Every request is also written to the log as one line (`POST /predict -> 200 in 1
 
 ## Deployment (Render)
 
-**Live endpoint:** `https://<your-service>.onrender.com` **(TODO before submission: put the real URL here, or write that the service was shut down after grading to save cost)**
+**Live endpoint:** `https://energy-forecasting-mlops-n29o.onrender.com` (free tier, so the service may be shut down after grading to save cost)
 
 Render builds the `Dockerfile` from the `main` branch, uses `/health` as the health check and redeploys on every merge. Setup, redeployment and rollback steps are in [`RUNBOOK.md`](RUNBOOK.md). Example requests against the deployed service:
 
 ```bash
-export URL=https://<your-service>.onrender.com
+export URL=https://energy-forecasting-mlops-n29o.onrender.com
 curl $URL/health
 curl -X POST $URL/predict -H "Content-Type: application/json" -d @examples/predict_request.json
 curl -X POST $URL/explain -H "Content-Type: application/json" -d @examples/predict_request.json
@@ -206,7 +206,7 @@ We go deep on two areas instead of wide.
 - **What we built:** `POST /explain` takes the same input as `/predict` and returns the baseline (the average prediction over typical training hours) and one contribution per feature in MWh, so that `prediction = baseline + sum of contributions`.
 - **How it works:** exact Shapley values (the standard attribution method behind SHAP), computed in `src/explain.py` without extra libraries. For the 9 features of the selected model this is 512 feature subsets x 50 background rows = 25,600 model evaluations in one vectorised call. The 50 background rows are a fixed random sample of training data stored in `models/background.json`. Tests check the code against a model whose Shapley values are known in closed form, and check that contributions add up.
 - **How we demonstrate it:** call `/explain` for 3 am, 2 pm and a Saturday. The hour contribution flips from clearly negative to clearly positive, and the weekend lowers demand, which matches the daily and weekly cycle in the data.
-- **Limits:** the explanation describes the model, not real-world causes. Features that move together (for example the three city temperatures) share credit, and some feature combinations tested during the calculation can be unusual. `/explain` is much slower than `/predict` because it evaluates the model 25,600 times per request: roughly 0.2 s on a fast machine and 0.6 s on a student laptop in our tests, against a few to 70 ms for `/predict`.
+- **Limits:** the explanation describes the model, not real-world causes. Features that move together (for example the three city temperatures) share credit, and some feature combinations tested during the calculation can be unusual. `/explain` is much slower than `/predict` because it evaluates the model 25,600 times per request: roughly 0.2 s on a fast machine, 0.6 s on a student laptop and about 2 s on Render's free instance in our tests, against a few to 70 ms for `/predict`.
 - **Next steps:** show the contributions as a chart in the final demo and add drift monitoring that compares incoming data with the training sample, motivated by the 2020 results.
 
 ## Tests and CI
