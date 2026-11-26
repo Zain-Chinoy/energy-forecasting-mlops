@@ -66,6 +66,7 @@ def test_training_pipeline_end_to_end_quick(tmp_path):
         register=False,
     )
     assert (tmp_path / "models" / "model.joblib").exists()
+    assert (tmp_path / "models" / "background.json").exists()
     saved = json.loads((tmp_path / "models" / "model_meta.json").read_text())
     assert saved["mlflow_run_id"] == meta["mlflow_run_id"]
     assert saved["test"]["rmse_improvement_vs_baseline_pct"] > 0

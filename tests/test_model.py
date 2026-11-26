@@ -41,3 +41,32 @@ def test_weekday_afternoon_demand_exceeds_night(bundle, payload):
 def test_missing_artifacts_raise(tmp_path):
     with pytest.raises(FileNotFoundError):
         load_bundle(tmp_path / "nope.joblib", tmp_path / "nope.json")
+
+
+def test_stale_background_file_is_rejected(tmp_path):
+    import json
+    import shutil
+
+    from src import config
+
+    shutil.copy(config.MODEL_PATH, tmp_path / "model.joblib")
+    shutil.copy(config.MODEL_META_PATH, tmp_path / "model_meta.json")
+    (tmp_path / "background.json").write_text(json.dumps({"features": ["wrong"], "rows": [[1.0]]}))
+    with pytest.raises(ValueError, match="different features"):
+        load_bundle(
+            tmp_path / "model.joblib", tmp_path / "model_meta.json", tmp_path / "background.json"
+        )
+
+
+def test_bundle_without_background_still_predicts(tmp_path, payload):
+    import shutil
+
+    from src import config
+
+    shutil.copy(config.MODEL_PATH, tmp_path / "model.joblib")
+    shutil.copy(config.MODEL_META_PATH, tmp_path / "model_meta.json")
+    bundle = load_bundle(
+        tmp_path / "model.joblib", tmp_path / "model_meta.json", tmp_path / "missing.json"
+    )
+    assert bundle.background is None
+    assert predict_one(bundle, payload) > 0
