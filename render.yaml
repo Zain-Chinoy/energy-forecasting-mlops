@@ -1,0 +1,9 @@
+# Optional Render Blueprint. You can also create the service by hand in the dashboard
+# (see RUNBOOK.md). Render reads this file only if you choose "New > Blueprint".
+services:
+  - type: web
+    name: energy-demand-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
