@@ -12,4 +12,4 @@ Known quirks (handled in `src/prepare_data.py` and `src/config.py`):
 
 - `QV2M_*` is documented as "relative humidity (%)" but its values (0.01 to 0.02) are specific humidity (kg/kg).
 - `Holiday_ID` is an identifier, so it is dropped (the `holiday` flag carries the information).
-- Demand drops ~15% from March 2020 (COVID-19), so 2020 is kept out of training and testing.
+- Demand drops from March 2020 (COVID-19; average March to June 2020 demand is about 12% below the same months of 2019), so 2020 is kept out of training and testing.

@@ -1,6 +1,8 @@
-# Contributions: Milestone 1 (Model & API)
+# Contributions: Milestones 1 and 2
 
 ## Team
+
+Workstreams for Milestone 1 are in the first tables; Milestone 2 follows in its own section further down.
 
 | Member | ERP | Workstream |
 |---|---|---|
@@ -69,3 +71,52 @@ I designed and ran the MLflow experiments, comparing three model types across ei
 
 ### Abdullah Feroz
 I built the FastAPI service and the test suite around the model. Strict Pydantic validation was the key part, because it rejects impossible inputs such as a temperature of 100 degrees before they reach the model. I also learned why we pin exact package versions and keep training and serving feature code in one place, so a saved model behaves the same everywhere it runs.
+
+
+# Milestone 2 (Containerisation, CI/CD, Deployment, Monitoring)
+
+## Work split
+
+| Workstream | Owner | Main files | Branch | Reviewer |
+|---|---|---|---|---|
+| Docker and deployment | Muhammad Zain Chinoy | `Dockerfile`, `.dockerignore`, `render.yaml`, Render service, `README.md` deployment section | `infra/docker` | Abdullah Feroz |
+| Project Focus: explainability and MLflow experimentation | Areeba Salman | `src/explain.py`, `/explain` in `src/app.py` and `src/model.py`, `models/background.json`, `tests/test_explain.py`, README Project Focus section, MLflow screenshot slide | `feat/explain` | Muhammad Zain Chinoy |
+| CI, monitoring and documentation | Abdullah Feroz | `.github/workflows/ci.yml`, `src/monitoring.py`, `/stats` in `src/app.py`, `tests/test_monitoring.py`, `RUNBOOK.md`, `AI_USAGE.md` | `infra/ci`, `feat/monitoring` | Areeba Salman |
+| Demo video, final slides, release tag | All three | 4 to 6 minute video, presentation, tag `v2.0-milestone2` | n/a | n/a |
+
+## Detailed tasks
+
+### Muhammad Zain Chinoy: Docker and deployment
+- Wrote the `Dockerfile` (slim Python 3.11 image, non-root user, `/health` healthcheck so `docker ps` shows `(healthy)`, `$PORT` support for Render).
+- Deployed the image on Render, set `/health` as the health check, and recorded the live URL and cURL examples in the README.
+- Tests the redeploy and rollback steps in `RUNBOOK.md` and creates the `v2.0-milestone2` tag after CI passes.
+
+### Areeba Salman: Project Focus (explainability and experimentation)
+- Built `POST /explain`: exact Shapley values for one prediction, so each feature's effect in MWh is visible and adds up to the prediction.
+- Stored a fixed background sample (`models/background.json`) and wrote tests including a closed-form linear-model check.
+- Wrote the Project Focus section and prepares the one-slide MLflow screenshot and the design trade-off (exact vs approximate explanations) for the final presentation.
+
+### Abdullah Feroz: CI, monitoring and documentation
+- Wrote the GitHub Actions workflow: ruff, pytest, then Docker build with a container smoke test of `/health`, `/predict`, `/explain` and `/stats`.
+- Built `/stats` (request count, error count, average and maximum latency per endpoint) with a middleware and tests.
+- Wrote `RUNBOOK.md` and `AI_USAGE.md`.
+
+## Review rotation (Milestone 2)
+
+- `infra/docker` (Zain) is reviewed by Abdullah.
+- `feat/explain` (Areeba) is reviewed by Zain.
+- `infra/ci` and `feat/monitoring` (Abdullah) are reviewed by Areeba.
+- CI must pass on a pull request before it is merged into `main`.
+
+## Individual reflections (Milestone 2)
+
+Each member replaces their placeholder below with 3 to 5 sentences in their own words once the work is merged: what they built, what went wrong, and what they learned.
+
+### Muhammad Zain Chinoy
+_TODO: write after deploying on Render._
+
+### Areeba Salman
+_TODO: write after `/explain` is merged._
+
+### Abdullah Feroz
+_TODO: write after CI and `/stats` are merged._
