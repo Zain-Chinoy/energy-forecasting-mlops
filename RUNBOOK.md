@@ -103,3 +103,4 @@ Returns the request count, error count, average and maximum latency (in millisec
 ## 7. After grading
 
 Free instances are not meant to run forever. Suspend the service in Render (**Settings > Suspend Service**) or delete it, and note in the README that the live endpoint was shut down.
+
