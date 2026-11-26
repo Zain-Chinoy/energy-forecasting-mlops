@@ -1,0 +1,19 @@
+# Keep the build context small: the image only needs requirements.txt, src/ and models/.
+.git
+.github
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+data
+tests
+reports
+mlflow.db
+mlartifacts
+mlruns
+requirements-dev.txt
+*.md
+Dockerfile
+.dockerignore
