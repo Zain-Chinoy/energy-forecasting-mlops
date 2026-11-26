@@ -1,0 +1,68 @@
+name: CI
+
+# Lint, test and build on every push (any branch), on pull requests, and on release tags.
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ruff (same version as requirements-dev.txt)
+        run: pip install "$(grep -E '^ruff==' requirements-dev.txt)"
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    name: Test (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+  build:
+    name: Build Docker image and smoke-test it
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image (tagged with the commit SHA)
+        run: docker build -t energy-api:${{ github.sha }} .
+      - name: Start container and wait until Docker reports it healthy
+        run: |
+          docker run -d --name api -p 8000:8000 energy-api:${{ github.sha }}
+          for i in $(seq 1 30); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' api)
+            echo "health status: $status"
+            [ "$status" = "healthy" ] && exit 0
+            sleep 2
+          done
+          docker logs api
+          exit 1
+      - name: Smoke test /health, /predict, /explain and /stats
+        run: |
+          curl -sf http://localhost:8000/health
+          body='{"timestamp":"2019-10-15T14:00:00","T2M_toc":30.1,"T2M_san":29.4,"T2M_dav":27.8,"QV2M_toc":0.0189,"QV2M_san":0.0185,"QV2M_dav":0.0178,"TQL_toc":0.05,"TQL_san":0.08,"TQL_dav":0.10,"W2M_toc":12.0,"W2M_san":6.5,"W2M_dav":3.2,"holiday":0,"school":1}'
+          curl -sf -X POST http://localhost:8000/predict -H 'Content-Type: application/json' -d "$body"
+          curl -sf -X POST http://localhost:8000/explain -H 'Content-Type: application/json' -d "$body"
+          curl -sf http://localhost:8000/stats | python3 -c "import json,sys; s=json.load(sys.stdin); print(s); assert s['total_requests'] >= 2"
+      - name: Show container logs
+        if: always()
+        run: docker logs api
